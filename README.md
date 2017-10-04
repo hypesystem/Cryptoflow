@@ -41,4 +41,4 @@ once anything reviewable exists. I am also very open to pointers towards related
 
 # License
 
-The project is fully open source. See [LICENSE.md](LICENSE.md).
+The project is fully open source, under the ISC license. See [LICENSE.md](LICENSE.md).
