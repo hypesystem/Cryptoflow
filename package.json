@@ -1,0 +1,30 @@
+{
+  "name": "cryptoflow",
+  "version": "0.1.0",
+  "description": "Cryptoflow\r ==========",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {
+    "async": "^2.5.0",
+    "browserify": "^14.4.0",
+    "express": "^4.16.1",
+    "mustache": "^2.3.0",
+    "openurl": "^1.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hypesystem/Cryptoflow.git"
+  },
+  "author": "Niels Abildgaard <me@hypesystem.dk>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hypesystem/Cryptoflow/issues"
+  },
+  "homepage": "https://github.com/hypesystem/Cryptoflow#readme"
+}
