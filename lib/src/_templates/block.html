@@ -2,7 +2,7 @@
 layout: default
 -->
 <h1>Block: {{ name }}</h1>
-<svg width="800px" height="600px" style="border: 1px solid black;">
+<svg width="1000px" height="600px">
     <style type="text/css">
         text {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -31,214 +31,188 @@ layout: default
     </style>
     <g id="renderspace"></g>
 </svg>
-<script>
-    let inputHeight = 100;
 
+<!-- modals -->
+<style type="text/css">
+    .modal {
+        display: none;
+        position: fixed;
+        top: calc(50% - 140px);
+        left: calc(50% - 300px);
+        right: calc(50% - 300px);
+        bottom: calc(50% - 140px);
+        z-index: 100;
+        background: white;
+        padding: 15px;
+        font-size: 0.9em;
+    }
+    .modal-close:after {
+        content: '[close]';
+    }
+    .modal-close {
+        color: rgba(0,0,0,0.7);
+        float: right;
+        padding: 8px;
+        cursor: pointer;
+    }
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.2);
+        filter: blur(10px);
+    }
+    .modal input {
+        width: 400px;
+    }
+</style>
+<div class="modal-container">
+    <div class="modal-overlay"></div>
+    <div class="modal edit-field-modal">
+        <div class="modal-close"></div>
+        <h1>Edit value: <span class="value-name"></h1>
+        <table>
+            <tr>
+                <td>String</td>
+                <td><input type="text" class="str-value"></td>
+            </tr>
+            <tr>
+                <td>Hex</td>
+                <td><input type="text" class="hex-value"></td>
+            </tr>
+            <tr>
+                <td>Int array (buffer)</td>
+                <td><input type="text" class="int-value"></td>
+            </tr>
+            <tr>
+                <td>Bits (binary string)</td>
+                <td><input type="text" class="bit-value"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="modal inspect-field-modal">
+        <div class="modal-close"></div>
+        <h1>Inspect value: <span class="value-name"></h1>
+        <table>
+            <tr>
+                <td>String</td>
+                <td class="str-value"></td>
+            </tr>
+            <tr>
+                <td>Hex</td>
+                <td class="hex-value"></td>
+            </tr>
+            <tr>
+                <td>Int array (buffer)</td>
+                <td class="int-value"></td>
+            </tr>
+            <tr>
+                <td>Bits (binary string)</td>
+                <td class="bit-value"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script>
+    let overlay = document.querySelector(".modal-overlay");
+    let modals = document.querySelectorAll(".modal");
+    Array.prototype.forEach.call(modals, (modal) => {
+        modal.querySelector(".modal-close").addEventListener("click", (e) => {
+            modal.style = "";
+            overlay.style = "";
+        });
+    });
+
+    //TODO: generate all representations from int array
+    let inspectFieldModal = document.querySelector(".inspect-field-modal");
+    let inspectField = (data) => {
+        let set = (key, val) => inspectFieldModal.querySelector(key).innerText = val;
+        set(".value-name", data.name);
+        set(".str-value", cryptoflow.encode("buf", "string", data.value));
+        set(".hex-value", cryptoflow.encode("buf", "hex", data.value));
+        set(".int-value", data.value.join(" "));
+        set(".bit-value", cryptoflow.encode("buf", "bits", data.value));
+        inspectFieldModal.style = "display: block;";
+        overlay.style = "display: block;";
+    }
+
+    let updateOnChange = (inputName, inputField, from) => {
+        return (e) => {
+            let set = (key, val) => editFieldModal.querySelector(key).value = val;
+
+            let value = inputField.value;
+            if(from == "buf") value = value.split(" ").map(s => parseInt(s));
+
+            if(from != "string") set(".str-value", cryptoflow.encode(from, "string", value));
+            if(from != "buf") set(".int-value", cryptoflow.encode(from, "buf", value).join(" "));
+            if(from != "bits") set(".bit-value", cryptoflow.encode(from, "bits", value));
+            if(from != "hex") {
+                let hexValue = cryptoflow.encode(from, "hex", value);
+                set(".hex-value", hexValue);
+                block.setValue(inputName, hexValue);
+            }
+            else {
+                block.setValue(inputName, value);
+            }
+        };
+    };
+
+    let updateFunctions = [];
+    let setUpUpdateOnChange = (inputName) => {
+        console.log("setting up listeners for", inputName);
+        let setListener = (selector, from) => {
+            let inputField = document.querySelector(`input${selector}`);
+            let listener = updateOnChange(inputName, inputField, from);
+            inputField.addEventListener("change", listener);
+            updateFunctions.push({ inputField, listener });
+        }
+        setListener(".str-value", "string");
+        setListener(".hex-value", "hex");
+        setListener(".int-value", "buf");
+        setListener(".bit-value", "bits");
+        console.log("set up listeners for", inputName, updateFunctions);
+    };
+    let clearUpdateOnChange = () => {
+        updateFunctions.forEach(({ inputField, listener }) => inputField.removeEventListener("change", listener));
+        updateFunctions = [];
+    };
+
+    let editFieldModal = document.querySelector(".edit-field-modal");
+    let editField = (data) => {
+        let set = (key, val) => editFieldModal.querySelector(key).value = val;
+        set(".value-name", data.name);
+        set(".str-value", cryptoflow.encode("buf", "string", data.value));
+        set(".hex-value", cryptoflow.encode("buf", "hex", data.value));
+        set(".int-value", data.value.join(" "));
+        set(".bit-value", cryptoflow.encode("buf", "bits", data.value));
+
+        setUpUpdateOnChange(data.name);
+        editFieldModal.style = "display: block;";
+        overlay.style = "display: block;";
+
+        let modalClose = editFieldModal.querySelector(".modal-close");
+        modalClose.addEventListener("click", closeListener);
+
+        function closeListener(e) {
+            clearUpdateOnChange();
+            modalClose.removeEventListener("click", closeListener);
+        }
+    }
+
+    //TODO: Click on block: display the block's inputs and outputs on top of each other
+    //      (pick an encoding, so eg. xor could show bits over bits over bits to give intuition).
+    //      (make them editable to see live results)
+
+    //TODO: Encoding: add option to view as a large integer (bigint), one long base 10 value.
+</script>
+
+<!-- script -->
+<script>
     let block = cryptoflow.blocks["{{ id }}"];
-    block.inputs = block.inputs.map(inputName => {
-        return { name: inputName, value: "example" };
-    })
 
     let renderspace = d3.select("#renderspace");
-
-    // render block
-    // - bounding group
-    let mainBlockX = 300;
-    let mainBlockY = 200;
-
-    // - square
-    let renderedBlock = renderspace.append("g")
-            .attr("class", "block")
-            .attr("cursor", "pointer")
-            .attr("transform", `translate(${mainBlockX}, ${mainBlockY})`);
-
-    let squareDimensions = { width: 100, height: 50 };
-
-    let blockSquare = renderedBlock.append("rect")
-        .attr("class", "block-square")
-        .attr("width", squareDimensions.width)
-        .attr("height", squareDimensions.height);
-
-    renderedBlock.on("click", () => {
-        alert("xor is made up of:\n\n" + block.innards.toString());
-    });
-    
-    // - text in square
-    let blockText = renderedBlock.append("text")
-        .attr("class", "block-label label")
-        .text(block.name);
-
-    let textDimensions = blockText.node().getBBox();
-
-    blockText
-        .attr("x", (squareDimensions.width / 2) - (textDimensions.width / 2))
-        .attr("y", (squareDimensions.height / 2) + (textDimensions.height / 6));
-
-    // render inputs
-    let input = renderspace.selectAll("g.block-input")
-            .data(block.inputs)
-        .enter().append("g")
-            .attr("class", "block-input")
-            .attr("transform", (d, i) => `translate(0, ${i*inputHeight})`);
-    
-    // - path
-    let getRelativeBlockY = (i) => mainBlockY - (i * inputHeight);
-    let getInputDotOnBlockY = (i) => getRelativeBlockY(i) + i * 15 + 10;
-
-    input.append("path")
-        .attr("class", "block-input-path path-between-circles")
-        .attr("d", (d, i) => `M225 20 C250 20, 275 ${getInputDotOnBlockY(i)}, 300 ${getInputDotOnBlockY(i)}`);
-
-    // - editable field
-    let inputEditable = input.append("g")
-        .attr("transform", "translate(50, 10)")
-        .attr("cursor", "pointer");
-
-    inputEditable
-        .append("rect")
-            .attr("stroke", "black")
-            .attr("fill", "white")
-            .attr("width", 175)
-            .attr("height", 20);
-
-    let inputEditableText = inputEditable.append("text")
-            .text((d) => d.value)
-            .attr("font-size", "0.8em");
-    
-    let inputEditableTextDimensions = inputEditableText.node().getBBox();
-
-    inputEditableText
-            .attr("x", 3)
-            .attr("y", (inputEditableTextDimensions.height / 6) * 5);
-
-    inputEditable.on("click", (d) => {
-        let v = d.value;
-        let bytes = stringToByteArray(d.value);
-        let hex = byteArrayToHex(bytes);
-        alert(`input:\nstr:${d.value}\nhex:${hex}`);
-    });
-
-    // - label
-    let inputLabel = input.append("text")
-        .attr("class", "block-input-label label")
-        .text((d) => d.name);
-    
-    let inputLabelDimensions = inputLabel.node().getBBox();
-
-    inputLabel
-        .attr("x", 50 - 5 - inputLabelDimensions.width)
-        .attr("y", inputLabelDimensions.height);
-
-    // - dots
-    input.append("circle")
-        .attr("class", "dot block-input-dot dot-on-box")
-        .attr("r", 4)
-        .attr("cx", 300)
-        .attr("cy", (d, i) => getInputDotOnBlockY(i));
-
-    input.append("circle")
-        .attr("class", "dot block-input-dot external-dot")
-        .attr("r", 4)
-        .attr("cx", 225)
-        .attr("cy", 20);
-
-    // render outputs
-    let output = renderspace.append("g")
-        .attr("class", "block-output")
-        .attr("transform", "translate(400, 200)");
-
-    output.append("path")
-        .attr("class", "block-output-path path-between-circles")
-        .attr("d", "M0 25 L75 25");
-    
-    output.append("circle")
-        .attr("class", "dot block-output-dot dot-on-box")
-        .attr("r", 4)
-        .attr("cy", 25);
-    
-    output.append("circle")
-        .attr("class", "dot block-output-dot external-dot")
-        .attr("r", 4)
-        .attr("cx", 75)
-        .attr("cy", 25);
-
-    let outputEditable = output.append("g")
-        .attr("transform", "translate(75,15)")
-        .attr("cursor", "pointer");
-
-    outputEditable.append("rect")
-        .attr("class", "output-field")
-        .attr("width", 175)
-        .attr("height", 20)
-        .attr("stroke", "black")
-        .attr("fill", "transparent");
-
-    let outputEditableText = outputEditable.append("text")
-        .text("loading...")
-        .attr("font-size", "0.8em");
-
-    let outputEditableTextDimensions = outputEditableText.node().getBBox();
-
-    outputEditableText
-        .attr("x", "7")
-        .attr("y", (inputEditableTextDimensions.height / 6) * 5);
-
-    outputEditable.on("click", () => alert("output:\n" + outputEditable.text()));
-
-    // - label
-    let outputLabel = output.append("text")
-        .text("output (in hex)");
-
-    let outputLabelDimensions = outputLabel.node().getBBox();
-
-    outputLabel
-        .attr("x", 75 + 175 + 5)
-        .attr("y", 10 + (outputLabelDimensions.height / 6) * 5);
-
-    doCalculation();
-
-    async function doCalculation() {
-        let inputValues = block.inputs
-            .map((input) => stringToByteArray(input.value));
-        console.log("input values", inputValues);
-        let inputValuePairs = pairInputValues(inputValues);
-        console.log("input value pairs", inputValuePairs);
-        let outputValues = await Promise.all(inputValuePairs
-            .map((inputValuePair) => { return block.innards.apply(null, inputValuePair); }));
-        console.log("output values", outputValues);
-        let result = byteArrayToHex(outputValues);
-        console.log("result", result);
-        outputEditableText.text(result);
-        return result;
-    }
-
-    function stringToByteArray(str) {
-        return str.split("").map((c) => c.charCodeAt());
-    }
-
-    // basically a zip with x input value arrays
-    function pairInputValues(inputValues) {
-        let len = Math.max.apply(null, inputValues.map(inputValue => inputValue.length));
-        let inputValuePairs = [];
-        for(let i = 0; i < len; i++) {
-            inputValuePairs.push(inputValues.map((inputValue) => {
-                return inputValue[i] || [];
-            }));
-        }
-        return inputValuePairs;
-    }
-
-    function byteArrayToHex(byteArray) {
-        return byteArray
-            .map(i => i.toString(16))
-            .map(h => { if(h.length < 2) return "0" + h; else return h; })
-            .join("");
-    }
-
-    function byteArrayToString(byteArray) {
-        return byteArray.map(String.fromCharCode).join("");
-    }
-
-    //TODO: connect each input to an editable field
-    //TODO: connect output to a text field
+    block.render(renderspace, inspectField, editField);
 </script>
