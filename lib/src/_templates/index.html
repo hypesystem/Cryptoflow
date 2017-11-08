@@ -2,8 +2,16 @@
 layout: default
 -->
 <h1>Welcome</h1>
+<p>These are the currently supported blocks that you can explore in the system.</p>
 <ul>
     {{ # blocks }}
         <li><a href="/blocks/{{ id }}">{{ name }}</a></li>
     {{ / blocks }}
 </ul>
+
+<p>
+    To contribute to the project, just visit <a href="http://github.com/hypesystem/Cryptoflow" target="noopener">our
+    GitHub page</a>. The README of the project is reproduced below.
+</p>
+<hr>
+{{ &README }}
