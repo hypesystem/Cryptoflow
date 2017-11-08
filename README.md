@@ -2,6 +2,7 @@ Cryptoflow
 ==========
 
 Cryptoflow *will be* a didactic cryptography environment with an emphasis on exploration.
+Follow it as it evolves on https://cryptoflow.netlify.com/.
 
 In plain language, it will be a bunch of boxes and lines, put together to form cryptographic
 constructs, much like you would find them illustrated in text books. Unlike the textbook
@@ -38,6 +39,28 @@ to all questions at this point of the project.
 Right now, a lot of ground work is going on, so it might be slightly hard to contribute
 with anything very concrete, but if you let yourself be known, I will be sure to ping you
 once anything reviewable exists. I am also very open to pointers towards related research.
+
+One thing you can do, is run the project locally, to see how it works. To do so, clone
+the github project to your machine, make sure you have [Node.js](https://nodejs.org/en/)
+installed.
+
+First, install the dependencies the project needs:
+
+```
+npm i
+```
+
+Now, to run the project locally (it will automatically open your default browser, and if
+it does not, you can find it on http://localhost:9876/), simply run:
+
+```
+npm start
+```
+
+`npm start` builds the project into a directory `_site`, then launches a simple static file
+serving server. You can run the build script alone with `npm run build`, if you want to. This
+is how the project is built for hosting on [Netlify](https://www.netlify.com/)'s static site
+hosting service.
 
 # License
 
