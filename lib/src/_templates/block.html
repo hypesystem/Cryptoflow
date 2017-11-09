@@ -121,6 +121,7 @@ layout: default
     <div class="modal inspect-block-modal">
         <div class="modal-close"></div>
         <h1>Inspect block: <span class="block-name"></span></h1>
+        <a href="#see-block-implementation" class="block-impl-inspect">See block implementation</a>
         <label for="encoding">
             Encoding:
             <select name="block-data-encoding">
@@ -263,6 +264,17 @@ layout: default
         inspectBlockModal.style = "display: block;";
         overlay.style = "display: block;";
     };
+
+    inspectBlockModal.querySelector(".block-impl-inspect").addEventListener("click", (e) => {
+        e.preventDefault();
+        if(typeof block.innards == "function") {
+            alert("[Raw Javascript Function]\n" + block.innards.toString());
+        }
+        else {
+            alert("Unsupported: inspecting innards that are not a function.");
+        }
+        return false;
+    });
 
     //TODO: Encoding: add option to view as a large integer (bigint), one long base 10 value.
 </script>
