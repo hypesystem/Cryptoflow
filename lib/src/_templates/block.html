@@ -25,8 +25,20 @@ layout: default
         path.block-input-path, path.block-output-path {
             fill: transparent;
         }
-        rect.output-field {
+        .block, .input-editable, .output-block {
+            cursor: pointer;
+        }
+        .input-editable-text, .output-block-text {
+            font-size: 0.8em;
+        }
+        .input-editable-rect {
+            fill: white;
+            stroke: black;
+        }
+        .output-block-rect {
+            stroke: black;
             stroke-dasharray: 5;
+            fill: transparent;
         }
     </style>
     <g id="renderspace"></g>
