@@ -283,7 +283,7 @@ layout: default
             alert("[Raw Javascript Function]\n" + block.innards.toString());
         }
         else {
-            alert("Unsupported: inspecting innards that are not a function.\nTMP: Innards spec:\n" + block.innards + "\n\nJS Translation:\n" + block.func.toString());
+            location.pathname = "/blocks/" + block.id + "/innards/";
         }
         return false;
     });

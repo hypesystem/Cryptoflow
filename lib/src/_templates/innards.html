@@ -1,0 +1,57 @@
+<!--
+layout: default
+-->
+<h1>Block: {{ name }} &rarr; innards</h1>
+<style type="text/css">
+    text {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    .block-square {
+        stroke: black;
+        fill: white;
+        filter: drop-shadow(0 3px 5px rgba(0,0,0,0.3));
+    }
+    .dot {
+        stroke: black;
+        fill: black;
+    }
+    .block-input-dot.external-dot, .block-output-dot.dot-on-box {
+        fill: white;
+    }
+    path {
+        stroke: black;
+    }
+    path.connector {
+        fill: transparent;
+    }
+    .block, .input-editable, .output-block {
+        cursor: pointer;
+    }
+    .input-editable-text, .output-block-text {
+        font-size: 0.8em;
+        /*transform: translate(4px, 15px);*/
+    }
+    .input-editable-rect {
+        fill: white;
+        stroke: black;
+    }
+    .output-block-rect {
+        stroke: black;
+        stroke-dasharray: 5;
+        fill: transparent;
+    }
+    .block-label {
+        /*transform: translate(4px, 25px);*/
+    }
+    .text-field-label {
+        font-size: 0.65em;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+</style>
+<svg width="1000px" height="600px" id="renderspace" xmlns="http://www.w3.org/2000/svg"></svg>
+<script>
+    let block = cryptoflow.blocks["{{ id }}"];
+    let svg = document.querySelector("#renderspace");
+    block.renderInnards(svg);
+</script>
