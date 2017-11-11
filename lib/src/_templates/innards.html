@@ -50,8 +50,52 @@ layout: default
     }
 </style>
 <svg width="1000px" height="600px" id="renderspace" xmlns="http://www.w3.org/2000/svg"></svg>
+
+<!-- modals -->
+<style type="text/css">
+    .modal {
+        display: none;
+        position: fixed;
+        top: calc(50% - 140px);
+        left: calc(50% - 300px);
+        right: calc(50% - 300px);
+        bottom: calc(50% - 140px);
+        z-index: 100;
+        background: white;
+        padding: 15px;
+        font-size: 0.9em;
+    }
+    .modal-close:after {
+        content: '[close]';
+    }
+    .modal-close {
+        color: rgba(0,0,0,0.7);
+        float: right;
+        padding: 8px;
+        cursor: pointer;
+    }
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.2);
+        filter: blur(10px);
+    }
+    .modal input {
+        width: 400px;
+    }
+    .modal label {
+        display: block;
+    }
+</style>
+<div class="modal-container"></div>
+
 <script>
     let block = cryptoflow.blocks["{{ id }}"];
     let svg = document.querySelector("#renderspace");
-    block.renderInnards(svg);
+    let modalspace = document.querySelector(".modal-container");
+    block.renderInnards(svg, modalspace);
 </script>
