@@ -113,6 +113,9 @@ Here are some ideas for what you could contribute with, if you are interested:
 - Improving the layouting algorithm for complex block innards to deal better with complex cases
 - Writing or modifying documentation to better include new users
 - Suggesting a restructuring of the code, to make it easier for new users to find their way around
+- Craft a better experience for new users of the system
+- Add support for text content in the system, so descriptions can be shown alongside the blocks
+- Improve the user interface or design of the site
 
 You should always feel free to ask questions :-)
 
