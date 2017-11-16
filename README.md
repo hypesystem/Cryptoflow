@@ -28,6 +28,7 @@ and thoughts along the way.
 
 ## Additional contributions by
 
+- [Sigurt Bladt Dinesen](https://github.com/Bladtman242) contributed [an example of ECB encryption and decryption](https://github.com/hypesystem/Cryptoflow/pull/5).
 - You...?
 
 ## Contributing
@@ -61,6 +62,59 @@ npm start
 serving server. You can run the build script alone with `npm run build`, if you want to. This
 is how the project is built for hosting on [Netlify](https://www.netlify.com/)'s static site
 hosting service.
+
+### Adding a block
+
+One kind of contribution you could make, is adding a block. A block is any kind of cryptographic
+construction, or an example of how existing constructions can be used. Usually the examples help
+allowing users to play around with data, for example flowing between an encryption and a decryption
+block, in order to see and understand their interaction.
+
+The first step to adding a block, is writing the code. Add a new folder in `lib/src` with what will
+be the ID of your block. Inside the folder, add a file `block.js`.
+
+You can look at existing blocks like `xor` (`lib/src/xor/block.js`) or `ecb_example`
+(`lib/src/ecb_example/block.js`) for examples of how to write a block implementation. The code in
+`block.js` should look something like this:
+
+```js
+module.exports = (cryptoflow) => {
+    return cryptoflow.defineBlock({
+        id: "xor",
+        name: "xor",
+        inputs: ["a", "b"],
+        innards: /** some implementation **/
+    });
+};
+```
+
+The `id` field should be the same as the name of the folder, you placed the block in. The `name` field
+may be any longer, descriptive name you can give your block. This name will be displayed in the overview
+list, among other places.
+
+The `inputs` array is an array of strings, each string being the name of an input variable. Each input
+will be rendered as a field that users can interact with and type content into in different encodings.
+
+Finally, the `innards` are the actual implementation of the block. For very basic constructs, we use
+simple asynchronous Javascript functions (like in `xor`). In order to be able to inspect the block, however,
+you must specify it in our custom innards language (like in `ecb_example`).
+
+If you are trying to get something to work, but struggling with the details, feel free to open a preliminary
+[Pull Request](https://github.com/hypesystem/Cryptoflow/compare), or an
+[Issue](https://github.com/hypesystem/Cryptoflow/issues/new) with your question.
+
+### Other contributions
+
+Of course all other contributions are welcome, too!
+
+Here are some ideas for what you could contribute with, if you are interested:
+
+- Refactoring the build system, to make it easier to read
+- Improving the layouting algorithm for complex block innards to deal better with complex cases
+- Writing or modifying documentation to better include new users
+- Suggesting a restructuring of the code, to make it easier for new users to find their way around
+
+You should always feel free to ask questions :-)
 
 # License
 
