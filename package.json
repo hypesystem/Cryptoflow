@@ -1,7 +1,7 @@
 {
   "name": "cryptoflow",
-  "version": "0.1.0",
-  "description": "Cryptoflow\r ==========",
+  "version": "0.1.1",
+  "description": "Cryptoflow",
   "main": "index.js",
   "directories": {
     "lib": "lib"
