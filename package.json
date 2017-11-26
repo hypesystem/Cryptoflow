@@ -1,6 +1,6 @@
 {
   "name": "cryptoflow",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Cryptoflow",
   "main": "index.js",
   "directories": {
