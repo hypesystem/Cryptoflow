@@ -116,6 +116,8 @@ Here are some ideas for what you could contribute with, if you are interested:
 - Craft a better experience for new users of the system
 - Add support for text content in the system, so descriptions can be shown alongside the blocks
 - Improve the user interface or design of the site
+- Add support for more encodings when viewing or changing values in the system --- for example, big integers could be supported
+- Identify parts of the code base for extraction into smaller libraries, or exact a smaller library --- for example, the encoding function
 
 You should always feel free to ask questions :-)
 
