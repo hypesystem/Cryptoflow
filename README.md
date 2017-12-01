@@ -119,6 +119,8 @@ Here are some ideas for what you could contribute with, if you are interested:
 - Add support for more encodings when viewing or changing values in the system --- for example, big integers could be supported
 - Identify parts of the code base for extraction into smaller libraries, or exact a smaller library --- for example, the encoding function
 
+You can also look through open issues and see if there is anything you can help with.
+
 You should always feel free to ask questions :-)
 
 # License
